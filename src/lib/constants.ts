@@ -37,6 +37,7 @@ export const KILLERS = [
     "Liche",
     "Seigneur des Ténèbres",
     "Maîtresse des Molosses",
+    "Le Premier",
 ] as const;
 // Verified list against official French localization.
 // Dredge -> Dragage (official)
@@ -75,18 +76,20 @@ export const KILLER_IMAGES: Record<string, string> = {
     "Chevalier": "The_Knight",
     "Marchande de crânes": "The_Skull_Merchant",
     "Singularité": "The_Singularity",
-    "Xénomorphe": "The_Xenomorph",
-    "Brave Gars": "The_Good_Guy",
-    "Inconnu": "The_Unknown",
-    "Liche": "The_Lich",
-    "Seigneur des Ténèbres": "The_Dark_Lord",
-    "Maîtresse des Molosses": "The_Houndmaster",
+    "Xénomorphe": "https://deadbydaylight.fandom.com/wiki/Special:FilePath/K33_TheXenomorph_Portrait.png",
+    "Brave Gars": "https://deadbydaylight.fandom.com/wiki/Special:FilePath/K34_TheGoodGuy_Portrait.png",
+    "Inconnu": "https://deadbydaylight.fandom.com/wiki/Special:FilePath/K35_TheUnknown_Portrait.png",
+    "Liche": "https://deadbydaylight.fandom.com/wiki/Special:FilePath/K36_TheLich_Portrait.png",
+    "Seigneur des Ténèbres": "https://deadbydaylight.fandom.com/wiki/Special:FilePath/K37_TheDarkLord_Portrait.png",
+    "Maîtresse des Molosses": "https://deadbydaylight.fandom.com/wiki/Special:FilePath/K38_TheHoundmaster_Portrait.png",
+    "Le Premier": "https://deadbydaylight.fandom.com/wiki/Special:FilePath/K39_TheFirst_Portrait.png",
 };
 
 export const getKillerImage = (killerName: string) => {
-    const id = KILLER_IMAGES[killerName];
-    if (!id) return null;
-    return `https://raw.githubusercontent.com/DanteASC4/dbd-assets-simple/main/killers/${id}/verticalPortrait.png`;
+    const idOrUrl = KILLER_IMAGES[killerName];
+    if (!idOrUrl) return null;
+    if (idOrUrl.startsWith("http")) return idOrUrl;
+    return `https://raw.githubusercontent.com/DanteASC4/dbd-assets-simple/main/killers/${idOrUrl}/verticalPortrait.png`;
 };
 
 export const MAPS = [
@@ -113,4 +116,5 @@ export const MAPS = [
     "Épave du Nostromo",
     "Place de Greenville",
     "Ruines Oubliées",
+    "Freddy Fazbear's Pizza",
 ] as const;
