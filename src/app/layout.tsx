@@ -4,6 +4,8 @@ import "./globals.css";
 import { GameProvider } from "@/context/GameContext";
 import Header from "@/components/Header";
 
+import MistBackground from "@/components/MistBackground";
+
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const creepster = Creepster({ weight: "400", subsets: ["latin"], variable: "--font-creepster" });
 const metalMania = Metal_Mania({ weight: "400", subsets: ["latin"], variable: "--font-metal" });
@@ -21,6 +23,7 @@ export default function RootLayout({
   return (
     <html lang="fr" className="dark">
       <body className={`${inter.variable} ${creepster.variable} ${metalMania.variable} min-h-screen bg-slate-950 text-slate-100 font-sans`}>
+        <MistBackground />
         <div className="fixed inset-0 pointer-events-none z-[-1] bg-[url('https://www.transparenttextures.com/patterns/dark-matter.png')] opacity-50 mix-blend-overlay"></div>
         <div className="fixed inset-0 pointer-events-none z-[-1] bg-gradient-to-b from-black/80 via-transparent to-black/80"></div>
 

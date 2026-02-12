@@ -28,11 +28,12 @@
   --font-sans: var(--font-inter);
 
   --animate-pulse-slow: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-  
-    @keyframes text-shimmer {
+
+  @keyframes text-shimmer {
     from {
       background-position: 0 0;
     }
+
     to {
       background-position: -200% 0;
     }
@@ -40,22 +41,69 @@
 }
 
 .gold-text {
-  background: linear-gradient(
-    to right,
-    #bf953f 20%,
-    #fcf6ba 40%,
-    #b38728 60%,
-    #fbf5b7 80%,
-    #bf953f 100%
-  );
+  background: linear-gradient(to right,
+      #bf953f 20%,
+      #fcf6ba 40%,
+      #b38728 60%,
+      #fbf5b7 80%,
+      #bf953f 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
   background-size: 200% auto;
 }
 
-.animate-text-shimmer {
-  animation: text-shimmer 3s linear infinite;
+
+/* Mist Animation */
+.mist-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  opacity: 0.4;
+}
+
+.mist {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 200%;
+  height: 100%;
+  background: url('https://raw.githubusercontent.com/DanteASC4/dbd-assets-simple/main/misc/fog-texture.png') repeat-x;
+  background-size: 50% 100%;
+  opacity: 0.5;
+}
+
+.mist-1 {
+  animation: moveMist 60s linear infinite;
+  z-index: 1;
+}
+
+.mist-2 {
+  animation: moveMist 40s linear infinite reverse;
+  z-index: 2;
+  top: 20%;
+  opacity: 0.3;
+}
+
+.mist-3 {
+  animation: moveMist 30s linear infinite;
+  z-index: 3;
+  bottom: 0;
+  height: 60%;
+  opacity: 0.6;
+}
+
+@keyframes moveMist {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
 }
 
 @layer base {

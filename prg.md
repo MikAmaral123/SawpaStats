@@ -11,6 +11,8 @@
 - [x] **Middleware de protection** :
   - Redirection automatique des utilisateurs non connectés vers `/login`.
   - Redirection des utilisateurs connectés hors de `/login`.
+  - *Fix:* Correction de la boucle de redirection (Cookies Server-Side).
+  - *Fix:* Déconnexion forcée (nettoyage complet des cookies).
 - [x] **Gestion de session** via Supabase Auth.
 
 ### 💾 Base de Données (Supabase)
@@ -34,11 +36,10 @@
 - [x] **Supabase Client & SSR**.
 - [x] **Déploiement** : Code poussé sur GitHub (`main`).
 
-## 🔜 Prochaines Étapes / Idées
-- [ ] Hébergement sur Vercel (Configuration des variables d'environnement).
-- [ ] Ajout de graphiques (Charts) pour l'évolution du rang/survie.
-- [ ] Filtres avancés dans l'historique (par Tueur, par Map).
-- [ ] Export des données (CSV/JSON).
+## 🔜 En Cours / À Faire
+- [ ] **Ambiance Visuelle** : Ajout d'une brume animée en arrière-plan.
+- [ ] **Filtres Historique** : Filtrer les parties par Tueur et par Map.
+- [ ] **Hébergement Vercel** : Configuration des variables d'environnement (En cours).
 
 ---
 
