@@ -1,10 +1,11 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useState } from "react";
+import { supabase } from "@/lib/supabase";
 
 export interface Game {
     id: string;
-    date: string;
+    created_at: string;
     map: string;
     killer: string;
     kills: number;
@@ -12,51 +13,66 @@ export interface Game {
 
 interface GameContextType {
     games: Game[];
-    addGame: (game: Omit<Game, "id" | "date">) => void;
-    deleteGame: (id: string) => void;
+    addGame: (game: Omit<Game, "id" | "created_at">) => Promise<void>;
+    deleteGame: (id: string) => Promise<void>;
+    isLoading: boolean;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
 
 export function GameProvider({ children }: { children: React.ReactNode }) {
     const [games, setGames] = useState<Game[]>([]);
-    const isLoaded = React.useRef(false);
+    const [isLoading, setIsLoading] = useState(true);
 
-    useEffect(() => {
-        const savedGames = localStorage.getItem("sawpa-stats-games");
-        if (savedGames) {
-            try {
-                // eslint-disable-next-line react-hooks/exhaustive-deps
-                setGames(JSON.parse(savedGames));
-            } catch (e) {
-                console.error("Failed to parse games", e);
-            }
-        }
-    }, []);
+    const fetchGames = async () => {
+        setIsLoading(true);
+        const { data, error } = await supabase
+            .from('games')
+            .select('*')
+            .order('created_at', { ascending: false });
 
-    useEffect(() => {
-        if (isLoaded.current) {
-            localStorage.setItem("sawpa-stats-games", JSON.stringify(games));
+        if (error) {
+            console.error("Error fetching games:", error);
         } else {
-            isLoaded.current = true;
+            console.log("Fetched games:", data);
+            setGames(data || []);
         }
-    }, [games]);
-
-    const addGame = (gameData: Omit<Game, "id" | "date">) => {
-        const newGame: Game = {
-            ...gameData,
-            id: crypto.randomUUID(),
-            date: new Date().toISOString(),
-        };
-        setGames((prev) => [newGame, ...prev]);
+        setIsLoading(false);
     };
 
-    const deleteGame = (id: string) => {
-        setGames((prev) => prev.filter((g) => g.id !== id));
+    useEffect(() => {
+        fetchGames();
+    }, []);
+
+    const addGame = async (gameData: Omit<Game, "id" | "created_at">) => {
+        const { data, error } = await supabase
+            .from('games')
+            .insert([gameData])
+            .select()
+            .single();
+
+        if (error) {
+            console.error("Error adding game:", error);
+        } else if (data) {
+            setGames((prev) => [data, ...prev]);
+        }
+    };
+
+    const deleteGame = async (id: string) => {
+        const { error } = await supabase
+            .from('games')
+            .delete()
+            .eq('id', id);
+
+        if (error) {
+            console.error("Error deleting game:", error);
+        } else {
+            setGames((prev) => prev.filter((g) => g.id !== id));
+        }
     };
 
     return (
-        <GameContext.Provider value={{ games, addGame, deleteGame }}>
+        <GameContext.Provider value={{ games, addGame, deleteGame, isLoading }}>
             {children}
         </GameContext.Provider>
     );
