@@ -12,7 +12,8 @@ export default function Header() {
 
     const handleLogout = async () => {
         await supabase.auth.signOut();
-        router.push("/login");
+        // Force full reload to ensure cookies are cleared and middleware runs
+        window.location.href = "/login";
     };
 
     // Special Gold Effect Logic
