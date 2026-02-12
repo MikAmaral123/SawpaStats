@@ -28,6 +28,34 @@
   --font-sans: var(--font-inter);
 
   --animate-pulse-slow: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  
+    @keyframes text-shimmer {
+    from {
+      background-position: 0 0;
+    }
+    to {
+      background-position: -200% 0;
+    }
+  }
+}
+
+.gold-text {
+  background: linear-gradient(
+    to right,
+    #bf953f 20%,
+    #fcf6ba 40%,
+    #b38728 60%,
+    #fbf5b7 80%,
+    #bf953f 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  background-size: 200% auto;
+}
+
+.animate-text-shimmer {
+  animation: text-shimmer 3s linear infinite;
 }
 
 @layer base {

@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { User } from "@supabase/supabase-js";
 
 export interface Game {
     id: string;
@@ -9,13 +10,22 @@ export interface Game {
     map: string;
     killer: string;
     kills: number;
+    user_id: string;
+}
+
+export interface Profile {
+    id: string;
+    pseudo: string | null;
+    avatar_url: string | null;
 }
 
 interface GameContextType {
     games: Game[];
-    addGame: (game: Omit<Game, "id" | "created_at">) => Promise<void>;
+    addGame: (game: Omit<Game, "id" | "created_at" | "user_id">) => Promise<void>;
     deleteGame: (id: string) => Promise<void>;
     isLoading: boolean;
+    user: User | null;
+    profile: Profile | null;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -23,31 +33,78 @@ const GameContext = createContext<GameContextType | undefined>(undefined);
 export function GameProvider({ children }: { children: React.ReactNode }) {
     const [games, setGames] = useState<Game[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [user, setUser] = useState<User | null>(null);
+    const [profile, setProfile] = useState<Profile | null>(null);
 
-    const fetchGames = async () => {
-        setIsLoading(true);
+    // Initial Auth Check & Subscription
+    useEffect(() => {
+        const initializeAuth = async () => {
+            setIsLoading(true);
+            const { data: { session } } = await supabase.auth.getSession();
+            setUser(session?.user ?? null);
+            if (session?.user) {
+                await fetchProfile(session.user.id);
+                await fetchGames(session.user.id);
+            } else {
+                setGames([]);
+                setProfile(null);
+            }
+            setIsLoading(false);
+        };
+
+        initializeAuth();
+
+        const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+            setUser(session?.user ?? null);
+            if (session?.user) {
+                await fetchProfile(session.user.id);
+                await fetchGames(session.user.id);
+            } else {
+                setGames([]);
+                setProfile(null);
+            }
+            setIsLoading(false);
+        });
+
+        return () => {
+            subscription.unsubscribe();
+        };
+    }, []);
+
+    const fetchProfile = async (userId: string) => {
+        const { data, error } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', userId)
+            .single();
+
+        if (data) {
+            setProfile(data);
+        } else if (error) {
+            console.error("Error fetching profile:", error);
+        }
+    };
+
+    const fetchGames = async (userId: string) => {
         const { data, error } = await supabase
             .from('games')
             .select('*')
+            .eq('user_id', userId)
             .order('created_at', { ascending: false });
 
         if (error) {
             console.error("Error fetching games:", error);
         } else {
-            console.log("Fetched games:", data);
             setGames(data || []);
         }
-        setIsLoading(false);
     };
 
-    useEffect(() => {
-        fetchGames();
-    }, []);
+    const addGame = async (gameData: Omit<Game, "id" | "created_at" | "user_id">) => {
+        if (!user) return; // Prevent adding if not logged in
 
-    const addGame = async (gameData: Omit<Game, "id" | "created_at">) => {
         const { data, error } = await supabase
             .from('games')
-            .insert([gameData])
+            .insert([{ ...gameData, user_id: user.id }])
             .select()
             .single();
 
@@ -72,7 +129,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
     };
 
     return (
-        <GameContext.Provider value={{ games, addGame, deleteGame, isLoading }}>
+        <GameContext.Provider value={{ games, addGame, deleteGame, isLoading, user, profile }}>
             {children}
         </GameContext.Provider>
     );
