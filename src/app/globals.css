@@ -1,0 +1,50 @@
+@import "tailwindcss";
+
+@theme {
+  --color-slate-50: #f8fafc;
+  --color-slate-100: #f1f5f9;
+  --color-slate-200: #e2e8f0;
+  --color-slate-300: #cbd5e1;
+  --color-slate-400: #94a3b8;
+  --color-slate-500: #64748b;
+  --color-slate-600: #475569;
+  --color-slate-700: #334155;
+  --color-slate-800: #1e293b;
+  --color-slate-900: #0f172a;
+  --color-slate-950: #020617;
+
+  --color-blood-500: #ef4444;
+  /* red-500 */
+  --color-blood-600: #dc2626;
+  /* red-600 */
+  --color-blood-700: #b91c1c;
+  /* red-700 */
+  --color-blood-800: #991b1b;
+  --color-blood-900: #7f1d1d;
+  --color-blood-950: #450a0a;
+
+  --font-creepster: var(--font-creepster);
+  --font-metal: var(--font-metal);
+  --font-sans: var(--font-inter);
+
+  --animate-pulse-slow: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 3%;
+    --foreground: 0 0% 90%;
+  }
+
+  body {
+    @apply bg-black text-slate-200 antialiased selection:bg-red-900 selection:text-white;
+  }
+}
+
+@utility font-creepster {
+  font-family: var(--font-creepster);
+}
+
+@utility font-metal {
+  font-family: var(--font-metal);
+}
